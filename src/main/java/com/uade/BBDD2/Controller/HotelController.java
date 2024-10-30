@@ -1,7 +1,10 @@
 package com.uade.BBDD2.Controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("hotel")
@@ -19,5 +22,10 @@ public class HotelController {
     @PostMapping("/eliminar")
     public ResponseEntity eliminarHotel(){
         return ResponseEntity.ok("Eliminado");
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity getHotele(@PathVariable int idHotel) {
+        return ResponseEntity.ok("Hotel");
     }
 }
