@@ -27,10 +27,9 @@ public class ReservaController {
 
     @PostMapping
     public Reservation createReservation(@RequestBody Reservation reservation) {
-
         Reservation savedReservation = reservationMongoRepo.save(reservation);
         ReservationNode rNode = new ReservationNode();
-        rNode.setMongoId(reservation.getId());
+        rNode.setMongoId(savedReservation.getId());
         reservationNodeRepo.save(rNode);
         return savedReservation;
     }
