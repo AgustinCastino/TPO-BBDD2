@@ -9,4 +9,5 @@ public interface RoomMongoRepository extends MongoRepository<Room, String> {
     Room findByHotelIdAndRoomNumber(String hotelId, String roomNumber);
 
 
+    Room findByRoomNumber(String roomNum);
 }

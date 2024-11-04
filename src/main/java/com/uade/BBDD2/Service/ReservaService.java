@@ -4,10 +4,12 @@ import com.uade.BBDD2.model.DTO.ReservaDTO;
 import com.uade.BBDD2.model.mongodb.Guest;
 import com.uade.BBDD2.model.mongodb.Hotel;
 import com.uade.BBDD2.model.mongodb.Reservation;
+import com.uade.BBDD2.model.mongodb.Room;
 import com.uade.BBDD2.model.neo4j.HotelNode;
 import com.uade.BBDD2.model.neo4j.ReservationNode;
 import com.uade.BBDD2.repository.mongodb.HotelMongoRepository;
 import com.uade.BBDD2.repository.mongodb.ReservationMongoRepository;
+import com.uade.BBDD2.repository.mongodb.RoomMongoRepository;
 import com.uade.BBDD2.repository.neo4j.ReservationNodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,7 @@ public class ReservaService {
     private final HotelMongoRepository hotelMongoRepository;
     private final ReservationNodeRepository reservationNodeRepository;
     private final ReservationMongoRepository reservationMongoRepository;
-
-
+    private final RoomMongoRepository roomMongoRepository;
 
 
     public List<Optional<Hotel>> printHotels (List<HotelNode> hoteles ) {
@@ -63,9 +64,10 @@ public class ReservaService {
     private String generateConfirmationCode() {
         return "RES-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
   }
-    public boolean isRoomAvailable(String roomId, LocalDate checkInDate, LocalDate checkOutDate) {
+    public boolean isRoomAvailable(String roomNum, LocalDate checkInDate, LocalDate checkOutDate) {
         // 1. Obtener todas las reservas relacionadas con la habitación en Neo4j
-        List<ReservationNode> reservations = reservationNodeRepository.findReservationsByRoomId(roomId);
+        Room room = roomMongoRepository.findByRoomNumber(roomNum);
+        List<ReservationNode> reservations = reservationNodeRepository.findReservationsByRoomId(room.getId());
 
         // 2. Verificar en MongoDB si alguna reserva tiene conflicto de fechas
         for (ReservationNode reservationNode : reservations) {

@@ -98,14 +98,14 @@ public class ReservaController {
 
     @GetMapping("/verDisponibilidad")
     public ResponseEntity<String> checkRoomAvailability(
-            @RequestParam String roomId,
+            @RequestParam String roomNum,
             @RequestParam String checkInDate,
             @RequestParam String checkOutDate) {
 
         LocalDate checkIn = LocalDate.parse(checkInDate);
         LocalDate checkOut = LocalDate.parse(checkOutDate);
 
-        boolean available = reservaService.isRoomAvailable(roomId, checkIn, checkOut);
+        boolean available = reservaService.isRoomAvailable(roomNum, checkIn, checkOut);
 
         if (available) {
             return ResponseEntity.ok("La habitación está disponible.");
@@ -115,16 +115,20 @@ public class ReservaController {
     }
     @GetMapping("/por_hotel_fecha")
     public ResponseEntity<List<Reservation>> getReservationsByHotelAndDate(
-            @RequestParam String hotelId,
+            @RequestParam String hotelNom,
             @RequestParam String fechaReserva) {
 
-        List<Reservation> reservations = reservaService.getReservationsByHotelAndDate(hotelId, fechaReserva);
+        Hotel hotel = hotelMongoRepo.findByNombreContaining(hotelNom);
+
+        List<Reservation> reservations = reservaService.getReservationsByHotelAndDate(hotel.getId(), fechaReserva);
         return reservations.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(reservations);
     }
 
     @GetMapping("/por_huesped")
-    public ResponseEntity<List<Reservation>> getReservationsByGuestId(@RequestParam String guestId) {
-        List<Reservation> reservations = reservaService.getReservationsByGuestId(guestId);
+    public ResponseEntity<List<Reservation>> getReservationsByGuestId(@RequestParam String email) {
+
+        Guest guest = guestMongoRepo.findByEmail(email);
+        List<Reservation> reservations = reservaService.getReservationsByGuestId(guest.getId());
         return reservations.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(reservations);
     }
 
