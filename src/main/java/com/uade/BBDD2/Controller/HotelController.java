@@ -5,11 +5,8 @@ import com.uade.BBDD2.model.neo4j.HotelNode;
 import com.uade.BBDD2.repository.mongodb.HotelMongoRepository;
 import com.uade.BBDD2.repository.neo4j.HotelNeoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
 
 @RestController
 @RequestMapping("hotel")
