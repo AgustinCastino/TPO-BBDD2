@@ -34,7 +34,6 @@ public class ReservaController {
     private final ReservationNodeRepository reservationNodeRepo;
     private final ReservaService reservaService;
     private final HotelMongoRepository hotelMongoRepo;
-    private final HotelNeoRepository hotelNeoRepo;
     private final GuestMongoRepository guestMongoRepo;
     private final GuestNodeRepository guestNodeRepo;
     private final RoomMongoRepository roomMongoRepo;

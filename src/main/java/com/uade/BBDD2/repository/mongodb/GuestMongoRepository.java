@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface GuestMongoRepository extends MongoRepository<Guest, String> {
 
 
+    Guest findByEmail(String email);
 }

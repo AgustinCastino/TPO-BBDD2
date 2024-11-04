@@ -26,10 +26,9 @@ public class HuespedController {
         return savedGuest;
     }
 
-    @GetMapping("/{id}")
-    public Guest getHuesped(@PathVariable String id) {
-        return guestMongoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Huesped not found"));
+    @GetMapping("/{email}")
+    public Guest getHuesped(@PathVariable String email) {
+        return guestMongoRepo.findByEmail(email);
     }
     //
     @PutMapping("/{id}")
