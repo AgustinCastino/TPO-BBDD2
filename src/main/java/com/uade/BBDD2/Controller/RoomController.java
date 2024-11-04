@@ -1,12 +1,19 @@
 package com.uade.BBDD2.Controller;
 
-import com.uade.BBDD2.model.mongodb.Hotel;
+import com.uade.BBDD2.Service.RoomService;
+import com.uade.BBDD2.model.mongodb.Amenity;
 import com.uade.BBDD2.model.mongodb.Room;
+import com.uade.BBDD2.model.neo4j.AmenityNode;
 import com.uade.BBDD2.model.neo4j.RoomNode;
+import com.uade.BBDD2.repository.mongodb.AmenityMongoRepository;
 import com.uade.BBDD2.repository.mongodb.RoomMongoRepository;
 import com.uade.BBDD2.repository.neo4j.RoomNeoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("room")
@@ -15,6 +22,9 @@ public class RoomController {
 
     private final RoomMongoRepository roomMongoRepo;
     private final RoomNeoRepository roomNeoRepo;
+    private final RoomService roomService;
+    private final AmenityMongoRepository amenityMongoRepo;
+
 
     @PostMapping
     public Room createHotel(@RequestBody Room room) {
@@ -32,10 +42,9 @@ public class RoomController {
     }
 
     @PutMapping("/{id}")
-    public Room updateRoom(@PathVariable String id, @RequestBody Room roomDetails) {
+    public Room updateRoom(@PathVariable String id) {
         Room room = roomMongoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
-        room.setDisponible(roomDetails.isDisponible());
         return roomMongoRepo.save(room);
     }
 
@@ -43,6 +52,22 @@ public class RoomController {
     public void deleteRoom(@PathVariable String id) {
         roomMongoRepo.deleteById(id);
         roomNeoRepo.deleteByMongoId(id);
+    }
+
+    @GetMapping("/{roomId}/amenities")
+    public ResponseEntity<List<Optional<Amenity>>> getAmenitiesByRoomId(@PathVariable String roomId) {
+        List<AmenityNode> amenities = roomService.getAmenitiesByRoomId(roomId);
+
+        return amenities.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok( roomService.printAmenity(amenities));
+    }
+
+    @PutMapping("/rel/amenity/{rID}/{aID}")
+    public void relRoomAmenity(@PathVariable String rID, @PathVariable String aID ) {
+        Room room =  roomMongoRepo.findById(rID)
+                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+        Amenity amenity =  amenityMongoRepo.findById(aID)
+                .orElseThrow(() -> new RuntimeException("POI not found"));
+        roomNeoRepo.relRoomAmenity(room.getId(), amenity.getId());
     }
 
 }

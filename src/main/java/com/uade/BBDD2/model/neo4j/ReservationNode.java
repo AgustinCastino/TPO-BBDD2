@@ -12,7 +12,5 @@ public class ReservationNode {
     @Id
     private String mongoId;
 
-    private String codigoConfirmacion;
-    private String fechaEntrada;
-    private String fechaSalida;
+
 }
