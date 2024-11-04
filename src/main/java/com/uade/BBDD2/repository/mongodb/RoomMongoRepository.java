@@ -1,11 +1,8 @@
 package com.uade.BBDD2.repository.mongodb;
-
+import com.uade.BBDD2.model.mongodb.Room;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
-import com.uade.BBDD2.model.mongodb.Reservation;
 
 @Repository
-public interface ReservationMongoRepository extends MongoRepository<Reservation, String>{
-
-    
+public interface RoomMongoRepository extends MongoRepository<Room, String> {
 }
