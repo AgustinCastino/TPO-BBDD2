@@ -13,7 +13,7 @@ public interface RoomNeoRepository extends Neo4jRepository<RoomNode, String> {
             "DELETE n")
     void deleteByMongoId(String mongoID);
 
-    @Query("MATCH (room:Room {mongoId: $roomId})-[:Tiene]->(amenity:Amenity) RETURN amenity")
+    @Query("MATCH (room:Room {mongoId: $roomId})-[:Tiene]->(amenity:Amenity) RETURN amenity {.mongoId}")
     List<AmenityNode> findAmenitiesByRoomId(String roomId);
 
     @Query("MATCH (c1:Room {mongoId: $mongoID}),(p1:Amenity {mongoId: $mongoID2})" +

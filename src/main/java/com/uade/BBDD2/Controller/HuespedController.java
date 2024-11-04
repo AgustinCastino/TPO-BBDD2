@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("huesped")
 @RequiredArgsConstructor
-public abstract class HuespedController {
+public class HuespedController {
 
     private final GuestMongoRepository guestMongoRepo;
     private final GuestNodeRepository guestNodeRepo;
@@ -29,13 +29,13 @@ public abstract class HuespedController {
     @GetMapping("/{id}")
     public Guest getHuesped(@PathVariable String id) {
         return guestMongoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> new RuntimeException("Huesped not found"));
     }
     //
     @PutMapping("/{id}")
     public Guest updateHuesped(@PathVariable String id, @RequestBody Guest hotelDetails) {
         Guest hotel = guestMongoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+                .orElseThrow(() -> new RuntimeException("Huesped not found"));
         hotel.setNombre(hotelDetails.getNombre());
         hotel.setDireccion(hotelDetails.getDireccion());
         // Actualiza otros atributos según sea necesario

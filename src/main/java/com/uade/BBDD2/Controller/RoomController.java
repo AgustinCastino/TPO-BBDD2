@@ -57,7 +57,7 @@ public class RoomController {
     @GetMapping("/{roomId}/amenities")
     public ResponseEntity<List<Optional<Amenity>>> getAmenitiesByRoomId(@PathVariable String roomId) {
         List<AmenityNode> amenities = roomService.getAmenitiesByRoomId(roomId);
-
+        System.out.println(amenities);
         return amenities.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok( roomService.printAmenity(amenities));
     }
 

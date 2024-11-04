@@ -97,7 +97,7 @@ public class ReservaController {
         return null;
     }
 
-    @GetMapping("/checkAvailability")
+    @GetMapping("/verDisponibilidad")
     public ResponseEntity<String> checkRoomAvailability(
             @RequestParam String roomId,
             @RequestParam String checkInDate,
@@ -114,7 +114,7 @@ public class ReservaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("La habitación no está disponible.");
         }
     }
-    @GetMapping("/by-hotel-and-date")
+    @GetMapping("/por_hotel_fecha")
     public ResponseEntity<List<Reservation>> getReservationsByHotelAndDate(
             @RequestParam String hotelId,
             @RequestParam String fechaReserva) {
@@ -123,13 +123,13 @@ public class ReservaController {
         return reservations.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(reservations);
     }
 
-    @GetMapping("/by-guest")
+    @GetMapping("/por_huesped")
     public ResponseEntity<List<Reservation>> getReservationsByGuestId(@RequestParam String guestId) {
         List<Reservation> reservations = reservaService.getReservationsByGuestId(guestId);
         return reservations.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(reservations);
     }
 
-    @GetMapping("/by-confirmation")
+    @GetMapping("/por_codReserva")
     public ResponseEntity<Reservation> getReservationByConfirmationCode(@RequestParam String codigoConfirmacion) {
         return reservaService.getReservationByConfirmationCode(codigoConfirmacion)
                 .map(ResponseEntity::ok)
