@@ -55,7 +55,7 @@ public class HotelController {
         hotelMongoRepo.deleteById(id);
         hotelNeoRepo.deleteByMongoId(id);
     }
-    @PutMapping("/rel/poi{hID}/{pID}")
+    @PutMapping("/rel/poi/{hID}/{pID}")
     public void relHotelPOI(@PathVariable String hID, @PathVariable String pID ) {
         Hotel hotel =  hotelMongoRepo.findById(hID)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
