@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Reservation {
 
     @Id
-    private String id; // ID de MongoDB
+    private String id;
 
     private String codigoConfirmacion;
     private String fechaReserva;

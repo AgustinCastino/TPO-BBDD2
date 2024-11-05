@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Amenity {
 
     @Id
-    private String id; // ID de MongoDB
+    private String id;
 
     private String nombre;
     private String descripcion;

@@ -40,7 +40,6 @@ public class AmenityController {
         if(amenityDetails.getDescripcion() != null){
             amenity.setDescripcion(amenityDetails.getDescripcion());
         }
-        // Actualiza otros atributos según sea necesario
         return amenityMongoRepo.save(amenity);
     }
 

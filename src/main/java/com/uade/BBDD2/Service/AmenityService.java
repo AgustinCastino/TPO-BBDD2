@@ -14,17 +14,5 @@ import java.util.Optional;
 @RequiredArgsConstructor
 
 public class AmenityService {
-    private final HotelMongoRepository hotelMongoRepository;
 
-
-    public List<Optional<Hotel>> printHotels (List<HotelNode> hoteles ) {
-
-        List<Optional<Hotel>> hotelesMDB = new ArrayList<>();
-
-        for (HotelNode hotel : hoteles) {
-            hotelesMDB.add(hotelMongoRepository.findById(hotel.getMongoId())) ;
-        }
-
-        return(hotelesMDB);
-    }
 }

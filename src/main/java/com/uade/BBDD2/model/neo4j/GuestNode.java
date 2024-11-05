@@ -10,6 +10,6 @@ import org.springframework.data.neo4j.core.schema.Node;
 public class GuestNode {
 
     @Id
-    private String mongoId; // ID de MongoDB del huésped
+    private String mongoId;
 
 }

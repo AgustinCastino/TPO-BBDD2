@@ -10,9 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Room {
 
     @Id
-    private String id; // ID de MongoDB
+    private String id;
 
-    private String hotelId; // ID de MongoDB del hotel al que pertenece
+    private String hotelId;
     private String roomNumber;
-    private String tipo; // Tipo de habitación (por ejemplo, estándar, suite, etc.)
+    private String tipo;
 }

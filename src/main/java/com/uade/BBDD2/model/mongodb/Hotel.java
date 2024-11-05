@@ -13,12 +13,11 @@ import java.util.List;
 public class Hotel {
 
     @Id
-    private String id; // ID de MongoDB
-
+    private String id;
     private String nombre;
     private String direccion;
     private String telefonos;
     private String email;
-    private String ubicacion; // Ubicación general o nombre de la ciudad
+    private String ubicacion;
 
 }

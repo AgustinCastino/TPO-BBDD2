@@ -26,7 +26,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 
 public class ReservaService {
-    private final HotelMongoRepository hotelMongoRepository;
     private final ReservationNodeRepository reservationNodeRepository;
     private final ReservationMongoRepository reservationMongoRepository;
     private final RoomMongoRepository roomMongoRepository;
@@ -34,16 +33,7 @@ public class ReservaService {
 
 
 
-    public List<Optional<Hotel>> printHotels (List<HotelNode> hoteles ) {
 
-        List<Optional<Hotel>> hotelesMDB = new ArrayList<>();
-
-        for (HotelNode hotel : hoteles) {
-            hotelesMDB.add(hotelMongoRepository.findById(hotel.getMongoId())) ;
-        }
-
-        return(hotelesMDB);
-    }
     public Reservation reserva(ReservaDTO Rdto){
         Reservation reservation = new Reservation();
         reservation.setFechaSalida(Rdto.getFechaSalida());
@@ -68,29 +58,24 @@ public class ReservaService {
         return "RES-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
   }
     public boolean isRoomAvailable(String roomNum, LocalDate checkInDate, LocalDate checkOutDate, String hotelId) {
-        // 1. Obtener todas las reservas relacionadas con la habitación en Neo4j
         Room room = roomMongoRepository.findByHotelIdAndRoomNumber(hotelId,roomNum);
         List<ReservationNode> reservations = reservationNodeRepository.findReservationsByRoomId(room.getId());
 
-        // 2. Verificar en MongoDB si alguna reserva tiene conflicto de fechas
         for (ReservationNode reservationNode : reservations) {
-            // Obtener la reserva en MongoDB usando el mongoId
             Reservation reservation = reservationMongoRepository.findById(reservationNode.getMongoId())
                     .orElse(null);
 
             if (reservation != null) {
-                // Convertir las fechas de la reserva
                 LocalDate existingCheckIn = LocalDate.parse(reservation.getFechaEntrada());
                 LocalDate existingCheckOut = LocalDate.parse(reservation.getFechaSalida());
 
-                // Verificar superposición de fechas
                 if (datesOverlap(checkInDate, checkOutDate, existingCheckIn, existingCheckOut)) {
-                    return false; // La habitación no está disponible
+                    return false;
                 }
             }
         }
 
-        return true; // La habitación está disponible en el rango de fechas solicitado
+        return true;
     }
 
     private boolean datesOverlap(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {

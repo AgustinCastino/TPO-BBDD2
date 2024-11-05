@@ -14,7 +14,6 @@ public interface ReservationNodeRepository extends Neo4jRepository<ReservationNo
     void relateReservationToRoomAndGuest(String guestId, String reservationId, String roomId);
 
 
-    // Consulta para obtener todas las reservas relacionadas con una habitación
     @Query("MATCH (r:Reservation)-[:Para_Habitacion]->(room:Room {mongoId: $roomId}) RETURN r")
     List<ReservationNode> findReservationsByRoomId(String roomId);
 
