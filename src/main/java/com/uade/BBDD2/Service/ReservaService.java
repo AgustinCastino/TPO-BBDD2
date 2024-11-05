@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class ReservaService {
     private final ReservationNodeRepository reservationNodeRepository;
     private final ReservationMongoRepository reservationMongoRepository;
     private final RoomMongoRepository roomMongoRepository;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+
 
 
     public List<Optional<Hotel>> printHotels (List<HotelNode> hoteles ) {
@@ -46,7 +49,7 @@ public class ReservaService {
         reservation.setFechaSalida(Rdto.getFechaSalida());
         reservation.setFechaEntrada(Rdto.getFechaEntrada());
         reservation.setCodigoConfirmacion(generateConfirmationCode());
-        reservation.setFechaReserva(String.valueOf(LocalDateTime.now()));
+        reservation.setFechaReserva(String.valueOf(LocalDateTime.now().format(formatter)));
 
         return reservation;
     }
@@ -64,9 +67,9 @@ public class ReservaService {
     private String generateConfirmationCode() {
         return "RES-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
   }
-    public boolean isRoomAvailable(String roomNum, LocalDate checkInDate, LocalDate checkOutDate) {
+    public boolean isRoomAvailable(String roomNum, LocalDate checkInDate, LocalDate checkOutDate, String hotelId) {
         // 1. Obtener todas las reservas relacionadas con la habitación en Neo4j
-        Room room = roomMongoRepository.findByRoomNumber(roomNum);
+        Room room = roomMongoRepository.findByHotelIdAndRoomNumber(hotelId,roomNum);
         List<ReservationNode> reservations = reservationNodeRepository.findReservationsByRoomId(room.getId());
 
         // 2. Verificar en MongoDB si alguna reserva tiene conflicto de fechas

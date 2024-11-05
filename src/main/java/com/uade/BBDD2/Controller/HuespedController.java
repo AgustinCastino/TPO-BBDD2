@@ -31,14 +31,26 @@ public class HuespedController {
         return guestMongoRepo.findByEmail(email);
     }
     //
-    @PutMapping("/{id}")
-    public Guest updateHuesped(@PathVariable String id, @RequestBody Guest hotelDetails) {
-        Guest hotel = guestMongoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Huesped not found"));
-        hotel.setNombre(hotelDetails.getNombre());
-        hotel.setDireccion(hotelDetails.getDireccion());
-        // Actualiza otros atributos según sea necesario
-        return guestMongoRepo.save(hotel);
+    @PutMapping("/{email}")
+    public Guest updateHuesped(@PathVariable String email, @RequestBody Guest huespedDetails) {
+        Guest guest = guestMongoRepo.findByEmail(email);
+        if(huespedDetails.getDireccion() != null){
+            guest.setDireccion(huespedDetails.getDireccion());
+        }
+        if(huespedDetails.getTelefono() != null){
+            guest.setTelefono(huespedDetails.getTelefono());
+        }
+        if (huespedDetails.getNombre() != null){
+            guest.setNombre(huespedDetails.getNombre());
+        }
+        if (huespedDetails.getApellido() != null){
+            guest.setApellido(huespedDetails.getApellido());
+        }
+        if (huespedDetails.getEmail() != null){
+            guest.setEmail(huespedDetails.getEmail());
+        }
+
+        return guestMongoRepo.save(guest);
     }
     //
     @DeleteMapping("/{id}")

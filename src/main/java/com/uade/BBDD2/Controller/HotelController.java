@@ -36,18 +36,31 @@ public class HotelController {
         return savedHotel;
     }
 
-    @GetMapping("/{id}")
-    public Hotel getHotel(@PathVariable String id) {
-        return hotelMongoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+    @GetMapping("/get")
+    public Hotel getHotel(@RequestParam String hotelNom) {
+        Hotel hotel = hotelMongoRepo.findByNombreContaining(hotelNom);
+
+        return hotel;
     }
     @PutMapping("/{id}")
     public Hotel updateHotel(@PathVariable String id, @RequestBody Hotel hotelDetails) {
         Hotel hotel = hotelMongoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
-        hotel.setNombre(hotelDetails.getNombre());
-        hotel.setDireccion(hotelDetails.getDireccion());
-        // Actualiza otros atributos según sea necesario
+        if(hotelDetails.getDireccion() != null){
+            hotel.setDireccion(hotelDetails.getDireccion());
+        }
+        if(hotelDetails.getNombre() != null){
+            hotel.setNombre(hotelDetails.getNombre());
+        }
+        if (hotelDetails.getTelefonos() != null){
+            hotel.setTelefonos(hotelDetails.getTelefonos());
+        }
+        if(hotelDetails.getEmail() != null){
+            hotel.setEmail(hotelDetails.getEmail());
+        }
+        if(hotelDetails.getUbicacion() != null){
+            hotel.setUbicacion(hotelDetails.getUbicacion());
+        }
         return hotelMongoRepo.save(hotel);
     }
     @DeleteMapping("/{id}")
@@ -55,28 +68,23 @@ public class HotelController {
         hotelMongoRepo.deleteById(id);
         hotelNeoRepo.deleteByMongoId(id);
     }
-    @PutMapping("/rel/poi/{hID}/{pID}")
-    public void relHotelPOI(@PathVariable String hID, @PathVariable String pID ) {
-        Hotel hotel =  hotelMongoRepo.findById(hID)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
-        POI poi =  POIMongoRepo.findById(pID)
-                .orElseThrow(() -> new RuntimeException("POI not found"));
+    @PutMapping("/rel/poi")
+    public void relHotelPOI(@RequestParam String hID, @RequestParam String pID ) {
+        Hotel hotel =  hotelMongoRepo.findByNombreContaining(hID);
+        POI poi =  POIMongoRepo.findByNombre(pID);
         hotelNeoRepo.relPOI(hotel.getId(),poi.getId());
     }
  // Punto 5 Encontrar puntos de interes en base a el hotel
-    @GetMapping("/pois/{hID}")
-    public  List<Optional<POI>> getPOI(@PathVariable String hID ) {
-        Hotel hotel =  hotelMongoRepo.findById(hID)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+    @GetMapping("/pois")
+    public  List<Optional<POI>> getPOI(@RequestParam String hID ) {
+        Hotel hotel =  hotelMongoRepo.findByNombreContaining(hID);
         return hotelService.printHotels(hotelNeoRepo.findPOINearHotel(hotel.getId()));
     }
 
-    @PutMapping("/rel/room/{hID}/{rID}")
-    public void relHotelRoom(@PathVariable String hID, @PathVariable String rID ) {
-        Hotel hotel =  hotelMongoRepo.findById(hID)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
-        Room room =  roomMongoRepo.findById(rID)
-                .orElseThrow(() -> new RuntimeException("POI not found"));
+    @PutMapping("/rel/room")
+    public void relHotelRoom(@RequestParam String hID, @RequestParam String rID ) {
+        Hotel hotel =  hotelMongoRepo.findByNombreContaining(hID);
+        Room room =  roomMongoRepo.findByRoomNumber(rID);
         hotelNeoRepo.relRoom(hotel.getId(),room.getId());
     }
 }

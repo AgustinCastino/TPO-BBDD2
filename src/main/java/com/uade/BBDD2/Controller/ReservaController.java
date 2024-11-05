@@ -56,16 +56,28 @@ public class ReservaController {
     public Reservation updateReservation(@PathVariable String id, @RequestBody Reservation reservationDetails) {
         Reservation reservation = reservationMongoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
-        reservation.setFechaEntrada(reservationDetails.getFechaEntrada());
-        reservation.setFechaSalida(reservationDetails.getFechaSalida());
-        // Actualiza otros atributos según sea necesario
+        if (reservationDetails.getHotelId() != null) {
+            reservation.setHotelId(reservationDetails.getHotelId());
+        }
+        if (reservationDetails.getFechaSalida() != null){
+            reservation.setHotelId(reservationDetails.getFechaSalida());
+        }
+        if (reservationDetails.getFechaReserva() != null){
+            reservation.setHotelId(reservationDetails.getFechaReserva());
+        }
+        if (reservationDetails.getFechaEntrada() != null) {
+            reservation.setHotelId(reservationDetails.getFechaEntrada());
+        }
+        if (reservationDetails.getGuestId() != null) {
+            reservation.setHotelId(reservationDetails.getGuestId());
+        }
         return reservationMongoRepo.save(reservation);
     }
 
     @DeleteMapping("/{id}")
     public void deleteHotel(@PathVariable String id) {
         reservationMongoRepo.deleteById(id);
-        reservationNodeRepo.deleteById(id);
+        reservationNodeRepo.deleteByMongoId(id);
     }
     @PostMapping("/crear")
     public Reservation crearReservation(@RequestBody ReservaDTO reservation) {
@@ -73,7 +85,7 @@ public class ReservaController {
         LocalDate checkOut = LocalDate.parse(reservation.getFechaSalida());
         Hotel hotel2 = hotelMongoRepo.findByNombreContaining(reservation.getNombreHotel());
 
-        boolean available = reservaService.isRoomAvailable(roomMongoRepo.findByHotelIdAndRoomNumber(hotel2.getId(),reservation.getNroRoom()).getId(), checkIn, checkOut);
+        boolean available = reservaService.isRoomAvailable(reservation.getNroRoom(), checkIn, checkOut,hotel2.getId());
 
         if (available) {
             Reservation reserva = reservaService.reserva(reservation);
@@ -99,13 +111,15 @@ public class ReservaController {
     @GetMapping("/verDisponibilidad")
     public ResponseEntity<String> checkRoomAvailability(
             @RequestParam String roomNum,
+            @RequestParam String hotelNom,
             @RequestParam String checkInDate,
             @RequestParam String checkOutDate) {
 
+        Hotel hotel = hotelMongoRepo.findByNombreContaining(hotelNom);
         LocalDate checkIn = LocalDate.parse(checkInDate);
         LocalDate checkOut = LocalDate.parse(checkOutDate);
 
-        boolean available = reservaService.isRoomAvailable(roomNum, checkIn, checkOut);
+        boolean available = reservaService.isRoomAvailable(roomNum, checkIn, checkOut, hotel.getId());
 
         if (available) {
             return ResponseEntity.ok("La habitación está disponible.");

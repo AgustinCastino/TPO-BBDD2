@@ -34,8 +34,19 @@ public class AmenityController {
     public Amenity updateAmenity(@PathVariable String id, @RequestBody Amenity amenityDetails) {
         Amenity amenity = amenityMongoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hotel not found"));
-        amenity.setDescripcion(amenityDetails.getDescripcion());
+        if(amenityDetails.getNombre() != null){
+            amenity.setNombre(amenityDetails.getNombre());
+        }
+        if(amenityDetails.getDescripcion() != null){
+            amenity.setDescripcion(amenityDetails.getDescripcion());
+        }
         // Actualiza otros atributos según sea necesario
         return amenityMongoRepo.save(amenity);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteRoom(@PathVariable String id) {
+        amenityMongoRepo.deleteById(id);
+        amenityNeoRepo.deleteByMongoId(id);
     }
 }

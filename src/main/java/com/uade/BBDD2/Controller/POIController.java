@@ -32,17 +32,22 @@ public class POIController {
 
     @GetMapping("/{id}")
     public POI getPOI(@PathVariable String id) {
-        return POIMongoRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("POI not found"));
+        return POIMongoRepo.findByNombre(id);
     }
 
     @PutMapping("/{id}")
     public POI updateHotel(@PathVariable String id, @RequestBody POI poiDetails) {
         POI poi = POIMongoRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("POI not found"));
-        poi.setNombre(poiDetails.getNombre());
-        poi.setUbicacion(poiDetails.getUbicacion());
-        // Actualiza otros atributos según sea necesario
+        if(poiDetails.getNombre()!=null) {
+            poi.setNombre(poiDetails.getNombre());
+        }
+        if(poiDetails.getUbicacion()!=null) {
+            poi.setUbicacion(poiDetails.getUbicacion());
+        }
+        if(poiDetails.getDescripcion()!=null) {
+            poi.setDescripcion(poiDetails.getDescripcion());
+        }
         return POIMongoRepo.save(poi);
     }
 
@@ -51,10 +56,9 @@ public class POIController {
         POIMongoRepo.deleteById(id);
         POINeoRepo.deleteByMongoId(id);
     }
-    @GetMapping("/hoteles/{pID}")
-    public List<Optional<Hotel>> getHoteles(@PathVariable String pID ) {
-        POI POI =  POIMongoRepo.findById(pID)
-                .orElseThrow(() -> new RuntimeException("Hotel not found"));
+    @GetMapping("/hoteles")
+    public List<Optional<Hotel>> getHoteles(@RequestParam String pID ) {
+        POI POI =  POIMongoRepo.findByNombre(pID);
         return POIservice.printHotels(POINeoRepo.findHotelNearPOI(POI.getId()));
     }
 
